@@ -8,7 +8,7 @@ const logger = require("./logger/logger");
 const mainRouter = require("./routes/mainRouter");
 const { initializeServer } = require("./config/server.config");
 const { initializeMulter } = require("./config/multer.config");
-const { PORT, MONGO_URI } = require("./utils/constants");
+const { PORT, MONGO_URI_DEV, MONGO_URI_PROD } = require("./utils/constants");
 const {asyncHandler} = require("./middlewares/AsyncHandler");
 
 const morganFormat = ":method :url :status :response-time ms";
@@ -37,4 +37,4 @@ app.use(
 initializeMulter(app);
 app.use(mainRouter);
 
-initializeServer(app, PORT, MONGO_URI);
+initializeServer(app, PORT, MONGO_URI_PROD);

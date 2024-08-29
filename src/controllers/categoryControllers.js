@@ -2,6 +2,27 @@ const Category = require("../models/Category");
 const logger = require("../logger/logger");
 const uploadToCloudinary = require("../utils/uploadToCloudinary");
 
+const updateCategoryData = async (categoryId, updates, res) => {
+  try {
+    const category = await Category.findById(categoryId).exec();
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    const updatedCategory = await Category.findByIdAndUpdate(categoryId, updates, {
+      new: true,
+    }).exec();
+
+    return res.status(200).json({
+      message: "Category updated successfully",
+      category: updatedCategory,
+    });
+  } catch (error) {
+    logger.error(error.message || "Error occurred: update Category profile");
+    res.status(500).json({ message: error.message || "Server error" });
+  }
+};
+
 // Create a new category
 const createCategory = async (req, res) => {
   const data = JSON.parse(req?.body?.data);
@@ -105,38 +126,38 @@ const deleteCategory = async (req, res) => {
 //update category by id
 const updateCategory = async (req, res) => {
   const { categoryId } = req.params;
-  const updates = JSON.parse(req?.body?.data);
+
+  let updates = null;
+  if (req?.body?.data) {
+    updates = JSON.parse(req?.body?.data);
+  }
+
   try {
-    const category = await Category.findById(categoryId).populate("jobs");
-    if (!category) {
-      return res.status(404).json({ message: "Category not found." });
-    }
+    // Check if a file is provided for upload
+    if (req?.files?.file && req.files.file.length > 0) {
+      const [result] = await uploadToCloudinary(req); // Upload file to Cloudinary
 
-    if (category.jobs.length > 0) {
-      return res.status(400).json({
-        message:
-          "Category cannot be updated because it is associated with jobs.",
-      });
-    }
-    const updatedCategory = await Category.findByIdAndUpdate(
-      categoryId,
-      updates,
-      {
-        new: true,
+      // If both data and file are provided
+      if (updates) {
+        const newData = { ...updates, photoUrl: result };
+        await updateCategoryData(categoryId, newData, res); // Update both data and file
+      } else {
+        // If only the file is provided
+        await updateCategoryData(categoryId, { photoUrl: result }, res); // Update only file
       }
-    ).exec();
-
-    if (!updatedCategory) {
-      return res.status(404).json({ message: "Category not found" });
+    } else {
+      // If only data is provided
+      if (updates) {
+        await updateCategoryData(categoryId, updates, res); // Update only data
+      } else {
+        // If neither data nor file is provided
+        return res
+          .status(400)
+          .json({ message: "No data or files provided for update." });
+      }
     }
-    
-    
-    res
-      .status(200)
-      .json({ message: "Category updated successfully", category: updatedCategory });
   } catch (error) {
-    logger.error(error.message || "Error occured : update category");
-    res.status(500).json({ message: error.message || "Server error"});
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
 

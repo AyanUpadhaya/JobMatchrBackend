@@ -37,4 +37,4 @@ app.use(
 initializeMulter(app);
 app.use(mainRouter);
 
-initializeServer(app, PORT, MONGO_URI_PROD);
+initializeServer(app, PORT, MONGO_URI_DEV);

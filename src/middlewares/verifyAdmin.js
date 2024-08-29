@@ -1,7 +1,7 @@
-const User = require("../models/User")
+const Admin = require("../models/Admin");
 const verifyAdmin = async(req, res, next) => {
-  const user = await User.findById(req.user._id);
-  const { userType } = user;
+  const admin = await Admin.findById(req.user._id);
+  const { userType } = admin;
 
 
   if (userType == "admin") {

@@ -104,23 +104,33 @@ const updateCompanyById = async (req, res) => {
     updates = JSON.parse(req?.body?.data);
   }
 
-  if (req?.files || req?.files?.file || req?.files?.file?.length > 0) {
-    const result = await uploadToCloudinary(req);
-    if (updates !== null) {
-      const newData = { ...updates, companyLogo: result };
-      await updateCompanyData(companyId, updates, res);
+  try {
+    // Check if a file is provided for upload
+    if (req?.files?.file && req.files.file.length > 0) {
+      const [result] = await uploadToCloudinary(req); // Upload file to Cloudinary
+
+      // If both data and file are provided
+      if (updates) {
+        const newData = { ...updates, photoUrl: result };
+        await updateCompanyData(companyId, newData, res); // Update both data and file
+      } else {
+        // If only the file is provided
+        await updateCompanyData(companyId, { photoUrl: result }, res); // Update only file
+      }
     } else {
-      
-      await updateCompanyData(companyId, { companyLogo: result }, res);
+      // If only data is provided
+      if (updates) {
+        await updateCompanyData(companyId, updates, res); // Update only data
+      } else {
+        // If neither data nor file is provided
+        return res
+          .status(400)
+          .json({ message: "No data or files provided for update." });
+      }
     }
-  } else {
-    if (updates !== null) {
-      const newData = { ...updates };
-      await updateCompanyData(companyId, newData, res);
-    } else {
-      return res.status(400).json({ message: "Bad request" });
-    }
-  } 
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
   
 };
 

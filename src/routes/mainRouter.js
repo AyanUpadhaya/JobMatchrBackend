@@ -5,6 +5,7 @@ const jobRoutes = require("./jobRoutes");
 const categoryRoutes = require("./categoryRoutes");
 const defaultRoutes = require("./defaultRoutes");
 const companyRoutes = require("./companyRoutes");
+const adminRoutes = require("./adminRoutes");
 
 
 
@@ -17,6 +18,7 @@ router.use(appRoutes);
 router.use(jobRoutes);
 router.use(categoryRoutes);
 router.use(companyRoutes);
+router.use(adminRoutes);
 
 
 

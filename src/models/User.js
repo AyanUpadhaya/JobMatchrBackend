@@ -8,6 +8,12 @@ const jobExperienceSchema = new mongoose.Schema({
   description: { type: String, required: false },
 });
 
+const resumeSchema = new mongoose.Schema({
+  resumeLink: { type: String, default: "" },
+  resumeOriginalName: { type: String, default: "" },
+});
+
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -48,7 +54,7 @@ const userSchema = new mongoose.Schema(
     interestedJobTypes: {
       type: [String],
       enum: ["full-time", "part-time", "contract", "remote"],
-      required:false
+      required: false,
     },
     applications: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Application" }],
@@ -65,6 +71,24 @@ const userSchema = new mongoose.Schema(
     token: {
       type: String,
       default: "",
+    },
+    phoneNumber: {
+      type: Number,
+      required: false,
+    },
+    reseume: {
+      type: resumeSchema,
+      required: false,
+    },
+    savedJobs: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Job",
+        },
+      ],
+      default: [],
+      required: false,
     },
   },
   { timestamps: true }

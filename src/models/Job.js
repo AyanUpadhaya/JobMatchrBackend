@@ -25,18 +25,8 @@ const jobSchema = new mongoose.Schema(
       enum: ["on-site", "remote", "full-time", "part-time", "contract"],
       default: ["on-site"], // Default is "on-site", can be expanded.
     },
-    companyName: {
-      type: String,
-      required: true,
-    },
-    companyLogo: {
-      type: String,
-      required: false,
-    },
-    aboutCompany: {
-      type: String,
-      required: false,
-    },
+    company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
+
     salaryRange: {
       type: salaryRangeSchema,
       default: { min: 0, max: 0 },

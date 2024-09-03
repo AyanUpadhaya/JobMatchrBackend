@@ -16,7 +16,7 @@ router.put("/user/:userId", userControllers.updateUser);
 // Get user by ID
 router.get("/user/:userId", userControllers.getUserById);
 // Get all users (admin only)
-router.get("/user", verifyToken, userControllers.getAllUsers);
+router.get("/user", verifyToken, verifyAdmin, userControllers.getAllUsers);
 
 // Route to toggle a job in user's saved jobs list
 router.put(
@@ -32,9 +32,17 @@ router.get(
 );
 
 // Route to update a user's resume
-router.patch("/users/:userId/resume", userControllers.updateResume);
+router.patch(
+  "/users/:userId/resume",
+  verifyToken,
+  userControllers.updateResume
+);
 
 //change user passowrd
-router.put("/users/change-password/:userId", userControllers.changePassword);
+router.put(
+  "/users/change-password/:userId",
+  verifyToken,
+  userControllers.changePassword
+);
 
 module.exports = router;

@@ -9,9 +9,13 @@ const updateCategoryData = async (categoryId, updates, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    const updatedCategory = await Category.findByIdAndUpdate(categoryId, updates, {
-      new: true,
-    }).exec();
+    const updatedCategory = await Category.findByIdAndUpdate(
+      categoryId,
+      updates,
+      {
+        new: true,
+      }
+    ).exec();
 
     return res.status(200).json({
       message: "Category updated successfully",
@@ -35,23 +39,23 @@ const createCategory = async (req, res) => {
   }
 
   try {
-    const categoryExists = await Category.findOne({ name:data.name });
+    const categoryExists = await Category.findOne({ name: data.name });
     if (categoryExists) {
       return res.status(400).json({ message: "Category already exists." });
     }
 
-    const result = await uploadToCloudinary(req);
+    const [result] = await uploadToCloudinary(req);
     const newData = { ...data, photoUrl: result };
 
     const newCategory = new Category(newData);
     await newCategory.save();
-    
+
     res
       .status(201)
       .json({ message: "Category created successfully!", newCategory });
   } catch (error) {
     logger.error(error.message || "Error occured : Create category");
-    res.status(500).json({ message: error.message || "Server error"});
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 
@@ -62,27 +66,25 @@ const getAllCategories = async (req, res) => {
     res.status(200).json(categories);
   } catch (error) {
     logger.error(error.message || "Error occured : Get all category");
-    res.status(500).json({ message: error.message || "Server error"});
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 
-//get single category 
-const singleCategory = async(req,res)=>{
+//get single category
+const singleCategory = async (req, res) => {
   const { categoryId } = req.params;
-  try{
-     const category = await Category.findById(categoryId).populate("jobs");
-     if (!category) {
-       return res.status(404).json({ message: "Category not found." });
-     }
+  try {
+    const category = await Category.findById(categoryId).populate("jobs");
+    if (!category) {
+      return res.status(404).json({ message: "Category not found." });
+    }
 
-     return res.status(200).json(category);
-
-  }catch(error){
+    return res.status(200).json(category);
+  } catch (error) {
     logger.error(error.message || "Error occured : Get single category");
     res.status(500).json({ message: error.message || "Server error" });
-
   }
-}
+};
 
 // Add a job to a category
 const addJobToCategory = async (jobId, categoryId) => {
@@ -115,11 +117,11 @@ const deleteCategory = async (req, res) => {
       });
     }
     await Category.findByIdAndDelete(categoryId);
-    
+
     res.status(200).json({ message: "Category deleted successfully!" });
   } catch (error) {
     logger.error(error.message || "Error occured : delete category");
-    res.status(500).json({ message: error.message || "Server error"});
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 

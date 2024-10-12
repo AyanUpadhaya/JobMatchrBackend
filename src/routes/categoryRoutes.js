@@ -12,12 +12,11 @@ router.post(
   categoryControllers.createCategory
 );
 // Route to get all categories
-router.get("/categories", verifyToken, categoryControllers.getAllCategories);
+router.get("/categories", categoryControllers.getAllCategories);
 // Route to delete a category if no jobs are associated
 router.get(
   "/categories/:categoryId",
-  verifyToken,
-  verifyAdmin,
+ 
   categoryControllers.singleCategory
 );
 router.delete(

@@ -33,7 +33,7 @@ const createCompanyProfile = async (req, res) => {
       return res.status(400).json({ message: "Company logo is required" });
     }
 
-    const photoUrl = await uploadToCloudinary(req);
+    const [photoUrl] = await uploadToCloudinary(req);
 
     const newProfile = new Company({ ...data, companyLogo: photoUrl });
     const savedProfile = await newProfile.save();

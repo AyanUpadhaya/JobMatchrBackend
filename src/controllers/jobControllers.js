@@ -61,6 +61,14 @@ const getAllJobs = async (req, res) => {
         path: "categoryId",
         model: "Category",
       })
+      .populate({
+        path: "company",
+        model: "Company",
+      })
+      .populate({
+        path: "userId",
+        model: "User",
+      })
       .exec();
 
     res.status(200).json(jobs);

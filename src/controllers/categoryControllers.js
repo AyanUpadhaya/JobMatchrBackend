@@ -3,7 +3,7 @@ const Category = require("../models/Category");
 const logger = require("../logger/logger");
 const cloudinary = require("../config/cloudinary.config");
 const getDataUri = require("../utils/datauri");
-
+const uploadToCloudinary = require("../utils/uploadToCloudinary");
 
 const updateCategoryData = async (categoryId, updates, res) => {
   try {

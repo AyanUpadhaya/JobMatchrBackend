@@ -28,7 +28,7 @@ const updateCompanyData = async (companyId, updates, res) => {
 const createCompanyProfile = async (req, res) => {
   const data = JSON.parse(req?.body?.data);
   try {
-    if (!data?.name) {
+    if (!data?.companyName) {
       return res.status(400).json({ message: "Missing required field" });
     }
     // Check if the file is present in the request

@@ -6,23 +6,9 @@ const logger = require("../logger/logger");
 const createJob = async (req, res) => {
   try {
 
-    const {
-      title,
-      description,
-      location,
-      jobType,
-      company,
-      categoryId
-    } = JSON.parse(req?.body?.data);
+    const data = JSON.parse(req?.body?.data);
 
-    const newJob = new Job({
-      title,
-      description,
-      location,
-      jobType,
-      company,
-      categoryId
-    });
+    const newJob = new Job(data);
 
     const savedJob = await newJob.save();
 

@@ -12,19 +12,19 @@ const verifyEmployer = require("../middlewares/verifyEmployer");
 const router = require("express").Router();
 
 //create
-router.post("/company", verifyToken, verifyEmployer, createCompanyProfile);
+router.post("/company", verifyToken, createCompanyProfile);
 
 //read
-router.get("/company", verifyToken, verifyEmployer, getCompanies);
+router.get("/company", verifyToken, getCompanies);
 
 //by id
-router.get("/company/:companyId", verifyToken, verifyEmployer, getCompanyById);
+router.get("/company/:companyId", verifyToken, getCompanyById);
 
 //get by user id
 router.get(
   "/user/:userId/company",
   verifyToken,
-  verifyEmployer,
+
   getCompanyByUserId
 );
 
@@ -32,7 +32,7 @@ router.get(
 router.put(
   "/company/:companyId",
   verifyToken,
-  verifyEmployer,
+
   updateCompanyById
 );
 
@@ -40,7 +40,7 @@ router.put(
 router.delete(
   "/company/:companyId",
   verifyToken,
-  verifyEmployer,
+
   deleteCompanyById
 );
 

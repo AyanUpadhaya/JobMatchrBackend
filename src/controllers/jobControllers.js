@@ -2,15 +2,9 @@ const Job = require("../models/Job");
 const Category = require("../models/Category");
 const { addJobToCategory } = require("./categoryControllers");
 const logger = require("../logger/logger");
-const uploadToCloudinary = require("../utils/uploadToCloudinary");
-
 
 const createJob = async (req, res) => {
   try {
-    // Check if the file is present in the request
-    if (!req.files || !req.files.file || req.files.file.length === 0) {
-      return res.status(400).json({ message: "Cover photo is required" });
-    }
 
     const {
       title,
@@ -18,20 +12,16 @@ const createJob = async (req, res) => {
       location,
       jobType,
       company,
-      categoryId,
-      ...rest
+      categoryId
     } = JSON.parse(req?.body?.data);
 
-    const photoUrl = await uploadToCloudinary(req);
     const newJob = new Job({
       title,
       description,
       location,
       jobType,
       company,
-      categoryId,
-      coverPhotoUrl: photoUrl,
-      ...rest,
+      categoryId
     });
 
     const savedJob = await newJob.save();

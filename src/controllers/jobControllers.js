@@ -13,7 +13,7 @@ const createJob = async (req, res) => {
     const savedJob = await newJob.save();
 
     // Add the job to the specified category
-    await addJobToCategory(savedJob._id, categoryId);
+    await addJobToCategory(savedJob._id, data?.categoryId);
 
     res.status(201).json({ message: "Job created successfully!", savedJob });
   } catch (error) {

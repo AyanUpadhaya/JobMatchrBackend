@@ -13,19 +13,7 @@ const initializeMulter = (app) => {
     "application/pdf": "pdf", // Added MIME type for PDF files
   };
 
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      const uploadDir = path.join(__dirname, TEMP_DIR);
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-      cb(null, uploadDir); // Store files in the specified temp directory
-    },
-    filename: (req, file, cb) => {
-      const extension = MIME_TYPES[file.mimetype]; // Determine file extension
-      cb(null, `${Date.now()}-${file.originalname}`); // Unique file naming with timestamp
-    },
-  });
+  const storage = multer.memoryStorage();
 
   const upload = multer({ storage });
 

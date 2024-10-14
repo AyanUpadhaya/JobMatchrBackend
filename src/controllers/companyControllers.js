@@ -28,10 +28,14 @@ const updateCompanyData = async (companyId, updates, res) => {
 const createCompanyProfile = async (req, res) => {
   const data = JSON.parse(req?.body?.data);
   try {
+    if (!data?.name) {
+      return res.status(400).json({ message: "Missing required field" });
+    }
     // Check if the file is present in the request
     if (!req.files || !req.files.file || req.files.file.length === 0) {
       return res.status(400).json({ message: "Company logo is required" });
     }
+
 
     const [photoUrl] = await uploadToCloudinary(req);
 

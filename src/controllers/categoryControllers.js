@@ -1,6 +1,9 @@
 const Category = require("../models/Category");
+
 const logger = require("../logger/logger");
-const uploadToCloudinary = require("../utils/uploadToCloudinary");
+const cloudinary = require("../config/cloudinary.config");
+const getDataUri = require("../utils/datauri");
+
 
 const updateCategoryData = async (categoryId, updates, res) => {
   try {
@@ -44,8 +47,13 @@ const createCategory = async (req, res) => {
       return res.status(400).json({ message: "Category already exists." });
     }
 
-    const [result] = await uploadToCloudinary(req);
-    const newData = { ...data, photoUrl: result };
+    const file = req.files.file[0];
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    const finalOuput = cloudResponse.secure_url;
+
+    // const [result] = await uploadToCloudinary(req);
+    const newData = { ...data, photoUrl: finalOuput };
 
     const newCategory = new Category(newData);
     await newCategory.save();

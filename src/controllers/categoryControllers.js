@@ -33,40 +33,38 @@ const updateCategoryData = async (categoryId, updates, res) => {
 // Create a new category
 const createCategory = async (req, res) => {
   const data = JSON.parse(req?.body?.data);
-  // if (!req.files || !req.files.file || req.files.file.length === 0) {
-  //   return res.status(400).json({ message: "Category photo is required" });
-  // }
+  if (!req.files || !req.files.file || req.files.file.length === 0) {
+    return res.status(400).json({ message: "Category photo is required" });
+  }
 
   if (!data?.name) {
     return res.status(400).json({ message: "Missing required field" });
   }
 
-  res.send(data?.name);
+  try {
+    const categoryExists = await Category.findOne({ name: data.name });
+    if (categoryExists) {
+      return res.status(400).json({ message: "Category already exists." });
+    }
 
-  // try {
-  //   const categoryExists = await Category.findOne({ name: data.name });
-  //   if (categoryExists) {
-  //     return res.status(400).json({ message: "Category already exists." });
-  //   }
+    const file = req.files.file[0];
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    const finalOuput = cloudResponse.secure_url;
 
-  //   const file = req.files.file[0];
-  //   const fileUri = getDataUri(file);
-  //   const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-  //   const finalOuput = cloudResponse.secure_url;
+    // const [result] = await uploadToCloudinary(req);
+    const newData = { ...data, photoUrl: finalOuput };
 
-  //   // const [result] = await uploadToCloudinary(req);
-  //   const newData = { ...data, photoUrl: finalOuput };
+    const newCategory = new Category(newData);
+    await newCategory.save();
 
-  //   const newCategory = new Category(newData);
-  //   await newCategory.save();
-
-  //   res
-  //     .status(201)
-  //     .json({ message: "Category created successfully!", newCategory });
-  // } catch (error) {
-  //   logger.error(error.message || "Error occured : Create category");
-  //   res.status(500).json({ message: error.message || "Server error" });
-  // }
+    res
+      .status(201)
+      .json({ message: "Category created successfully!", newCategory });
+  } catch (error) {
+    logger.error(error.message || "Error occured : Create category");
+    res.status(500).json({ message: error.message || "Server error" });
+  }
 };
 
 // Get all categories

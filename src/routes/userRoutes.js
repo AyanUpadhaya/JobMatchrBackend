@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const userControllers = require("../controllers/userControllers");
 const verifyToken = require("../middlewares/verifyToken");
-const verifyAdmin = require("../middlewares/verifyAdmin");
 //user signup ***
 router.post("/user/register", userControllers.createUser);
 //login user ***
@@ -16,7 +15,7 @@ router.put("/user/:userId", userControllers.updateUser);
 // Get user by ID
 router.get("/user/:userId", userControllers.getUserById);
 // Get all users (admin only)
-router.get("/user", verifyToken, verifyAdmin, userControllers.getAllUsers);
+router.get("/user", verifyToken, userControllers.getAllUsers);
 
 // Route to toggle a job in user's saved jobs list
 router.put(

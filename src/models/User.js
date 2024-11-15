@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { timekoto } = require("../utils/utils");
 const jobExperienceSchema = new mongoose.Schema({
   jobTitle: { type: String, required: true },
   company: { type: String, required: true },
@@ -79,6 +79,10 @@ const userSchema = new mongoose.Schema(
     reseume: {
       type: resumeSchema,
       required: false,
+    },
+    postedDate: {
+      type: String,
+      default: timekoto("s"),
     },
     savedJobs: {
       type: [

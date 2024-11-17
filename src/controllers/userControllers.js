@@ -191,6 +191,11 @@ const reset_password = async (req, res) => {
 //update user data
 const updateUser = async (req, res) => {
   const { userId } = req.params;
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return res.status(404).send({ message: "user not found." });
+  }
   let updates = null;
   if (req?.body?.data) {
     updates = JSON.parse(req?.body?.data);
@@ -325,6 +330,11 @@ const getSavedJobs = async (req, res) => {
 const updateResume = async (req, res) => {
   try {
     const { userId } = req.params;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send({ message: "user not found." });
+    }
     // Check if a file is provided for upload
     if (req?.files?.file && req.files.file.length > 0) {
       const [resumeLink, resumeOriginalName] = await uploadToCloudinary(req);

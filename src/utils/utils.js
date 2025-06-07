@@ -18,4 +18,19 @@ const timekoto = (prop) => {
 };
 
 
-module.exports = { getCurrentUnixTimestamp, timekoto };
+// Custom AppError class
+class AppError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+// Utility to catch async errors
+const catchAsync = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+
+module.exports = { getCurrentUnixTimestamp, timekoto, AppError, catchAsync };

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { timekoto } = require("../utils/utils");
-
+const slug = require("mongoose-slug-generator");
+mongoose.plugin(slug);
 const salaryRangeSchema = new mongoose.Schema({
   min: { type: Number, default: 0 },
   max: { type: Number, default: 0 },
@@ -12,6 +13,7 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    slug: { type: String, slug: "title" },
     description: {
       type: String,
       required: true,

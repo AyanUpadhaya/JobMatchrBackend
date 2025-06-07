@@ -15,7 +15,8 @@ const router = express.Router();
 
 router.post("/jobs",verifyToken, createJob);
 router.get("/jobs", getAllJobs);
-router.get("/jobs/:jobId",verifyToken, getJobById);
+// router.get("/jobs/:jobId",verifyToken, getJobById);
+router.get("/jobs/:jobId", getJobById);
 router.put("/jobs/:jobId",verifyToken, updateJob);
 router.delete("/jobs/:jobId",verifyToken, deleteJob);
 router.get("/user/:userId/jobs",verifyToken, getJobsByUserId);

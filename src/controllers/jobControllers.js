@@ -2,25 +2,29 @@ const Job = require("../models/Job");
 const Category = require("../models/Category");
 const { addJobToCategory } = require("./categoryControllers");
 const logger = require("../logger/logger");
+const { AppError, catchAsync } = require("../utils/utils");
+const mongoose = require("mongoose");
 
-const createJob = async (req, res) => {
-  try {
-
-    const data = JSON.parse(req?.body?.data);
-
-    const newJob = new Job(data);
-
-    const savedJob = await newJob.save();
-
-    // Add the job to the specified category
-    await addJobToCategory(savedJob._id, data?.categoryId);
-
-    res.status(201).json({ message: "Job created successfully!", savedJob });
-  } catch (error) {
-    logger.error(error.message || "Error occurred: create job");
-    res.status(500).json({ message: error.message || "Server error" });
+const createJob = catchAsync(async (req, res, next) => {
+  const data = JSON.parse(req?.body?.data);
+  // Check if categoryId is a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(data?.categoryId)) {
+    return next(new AppError("Category not found", 404));
   }
-};
+  const category = await Category.findById(data?.categoryId);
+  if (!category) {
+    return next(new AppError("Category not found", 404));
+  }
+
+  const newJob = new Job(data);
+
+  const savedJob = await newJob.save();
+
+  // Add the job to the specified category
+  await addJobToCategory(savedJob._id, data?.categoryId);
+
+  res.status(201).json({ message: "Job created successfully!", savedJob });
+});
 
 const getAllJobs = async (req, res) => {
   try {

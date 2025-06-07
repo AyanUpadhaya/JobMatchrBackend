@@ -98,10 +98,6 @@ const singleCategory = async (req, res) => {
 const addJobToCategory = async (jobId, categoryId) => {
   try {
     const category = await Category.findById(categoryId);
-    if (!category) {
-      throw new Error("Category not found.");
-    }
-
     category.jobs.push(jobId);
     await category.save();
   } catch (error) {
